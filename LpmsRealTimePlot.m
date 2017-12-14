@@ -1,13 +1,30 @@
 close all
-clear all
+clear
 clc
 
 % Parameters
-T = 400;        % number of samples to record
+T = 400;        % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
+fprintf('Script to real time plot LPMS sensor data with %d data width \n', T);
+
+% code to Serial port selection
+fprintf('%s \n',seriallist);
+prompt = 'Which port? [1-16] Zero to Exit: ';
+x = input(prompt);
+if x == 0
+    disp('LPMS Sensors usb virtual com port(VCP) functionality is disabled by default. Please use VCPConversionTool to enable VCP support.');
+    return
+end
+sCount = 1;
+for n = seriallist
+    if sCount == x
+        COMPort = n;
+    end
+    sCount = sCount + 1;
+end
+disp(COMPort)
 
 % Comunication parameters
-COMPort = COMPort();        % function with COM port selection
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms();          % function lpms sensor given by LPMS
 
