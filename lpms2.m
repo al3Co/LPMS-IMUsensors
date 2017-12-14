@@ -1,4 +1,4 @@
-classdef lpms < handle
+classdef lpms2 < handle
     % Lpms class to interface with LpmsSensors
     %
     % Known Issues:
@@ -83,10 +83,10 @@ classdef lpms < handle
         isSensorConnected = false;
         
         % define the properties of the class here, (like fields of a struct)
-        rxBuffer = uint8(zeros(1, lpms.MAX_BUFFER));
-        rawTxBuffer = uint8(zeros(1, lpms.MAX_BUFFER));
+        rxBuffer = uint8(zeros(1, lpms2.MAX_BUFFER));
+        rawTxBuffer = uint8(zeros(1, lpms2.MAX_BUFFER));
         inBytes = uint8(zeros(1, 2));
-        rxState = lpms.PACKET_END;
+        rxState = lpms2.PACKET_END;
         rxIndex = 0;
         currentAddress = 0;
         currentFunction = 0;

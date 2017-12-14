@@ -2,47 +2,40 @@ close all
 clear
 clc
 
-% Parameters
+%% Parameters
 T = 400;        % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', T);
 
-% code to Serial port selection
+%% Code to Serial port selection
 fprintf('%s \n',seriallist);
-prompt = 'Which port? [1-16] Zero to Exit: ';
-x = input(prompt);
+connectedSerials = seriallist;
+x = input(['Which port of the list? [1->' num2str(length(connectedSerials)) ']. Zero to Exit: ']);
 if x == 0
-    disp('LPMS Sensors usb virtual com port(VCP) functionality is disabled by default. Please use VCPConversionTool to enable VCP support.');
     return
 end
-sCount = 1;
-for n = seriallist
-    if sCount == x
-        COMPort = n;
-    end
-    sCount = sCount + 1;
-end
+COMPort = connectedSerials(x);
 disp(COMPort)
 
-% Comunication parameters
+%% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
-lpSensor = lpms();          % function lpms sensor given by LPMS
+lpSensor = lpms1();          % function lpms sensor given by LPMS
 
 accData = zeros(T,3);
 
 
 
-% Connect to sensor
+%% Connect to sensor
 if ( ~lpSensor.connect(COMPort, baudrate) )
     disp('sensor not connected')
     return 
 end
 disp('sensor connected')
 
-% Set streaming mode
+%% Set streaming mode
 lpSensor.setStreamingMode();
 
-% Loop Plot
+%% Loop Plot
 figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
