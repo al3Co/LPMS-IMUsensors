@@ -3,7 +3,7 @@ clear
 clc
 
 %% Parameters
-nData = 500;    % number of samples to record (seconds / 100)
+nData = 50;    % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
@@ -25,19 +25,19 @@ accDataS2 = zeros(nData,3);
 %quatData = zeros(nData,4);
 
 %% Connect to sensor (TODO: function to know if connected each sensor)
-disp('Connecting sensor 1');
+disp('Connecting sensor 1 ...');
 if ( ~lpSensorS1.connect(COMPortS1, baudrate) )
     disp('Sensor 1 not connected')
     return 
 end
-disp('sensor 1 connected');
+disp('Sensor 1 connected');
 
-disp('Connecting sensor 2');
+disp('Connecting sensor 2 ...');
 if ( ~lpSensorS2.connect(COMPortS2, baudrate) )
     disp('Sensor 2 not connected')
     return 
 end
-disp('sensor 2 connected');
+disp('Sensor 2 connected');
 
 %% Set streaming mode
 disp('Setting sensors');
@@ -69,18 +69,22 @@ while nCount <= nData
         nCount=nCount + 1;
     end
 end
-delete(h)
 disp('Done')
+delete(h)
+
+%% Disconnecting sensors
+disp('Disconnecting sensors ...')
 if (lpSensorS1.disconnect())
     disp('Sensor 1 disconnected')
 end
 if (lpSensorS2.disconnect())
     disp('Sensor 2 disconnected')
 end
+
 %% Plot Data
 if cancel
     disp('Plotting')
-    plotingData(ts, S1, S2);
+    plotingData(ts, accDataS1, accDataS2);
 else
     disp('Process Canceled');
 end
