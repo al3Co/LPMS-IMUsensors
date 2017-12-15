@@ -1,10 +1,11 @@
 close all
 clear
 clc
+
 %% Parameters
 nData = 500;    % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
-fprintf('Script to record LPMS sensors data with %d data \n', nData);
+fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
 %% code to Serial port selection TODO
 COMPortS1 = '/dev/tty.SLAB_USBtoUART';
@@ -14,6 +15,8 @@ COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
 baudrate = 921600;             % rate at which information is transferred
 lpSensorS1 = lpms1();          % function lpms API sensor 1 given by LPMS
 lpSensorS2 = lpms2();          % function lpms API sensor 2 given by LPMS
+
+cancel = true;
 ts = zeros(nData,1);
 
 %% Variables for data Storage
@@ -51,6 +54,7 @@ disp('Accumulating sensors data')
 while nCount <= nData
     % Check for Cancel button press
     if getappdata(h,'canceling')
+        cancel = false;
         break
     end
     d1 = lpSensorS1.getQueueSensorData();
@@ -65,6 +69,7 @@ while nCount <= nData
         nCount=nCount + 1;
     end
 end
+delete(h)
 disp('Done')
 if (lpSensorS1.disconnect())
     disp('Sensor 1 disconnected')
@@ -73,8 +78,12 @@ if (lpSensorS2.disconnect())
     disp('Sensor 2 disconnected')
 end
 %% Plot Data
-disp('Plotting')
-plotingData(ts, S1, S2);
+if cancel
+    disp('Plotting')
+    plotingData(ts, S1, S2);
+else
+    disp('Process Canceled');
+end
 
 % plot(ts-ts(1), accDataS1);
 % xlabel('timestamp(s)');
