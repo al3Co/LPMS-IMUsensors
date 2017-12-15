@@ -8,13 +8,15 @@ nCount = 1;     % starting number
 fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
 %% TODO: code to Serial port selection
-COMPort = {'/dev/tty.SLAB_USBtoUART', '/dev/tty.SLAB_USBtoUART4'};
-%COMPort = {'/dev/tty.SLAB_USBtoUART'};
-len = length(COMPort);
+COMPort = COMPort();
+numOfSensors = length(COMPort);
+if numOfSensors > 2
+    return
+end
 
 %% Comunication parameters      
 baudrate = 921600;           % rate at which information is transferred
-for n = 1:len
+for n = 1:numOfSensors
     lpSensor(n) = lpms1();          % function lpms API sensor given by LPMS
 end
 
@@ -22,7 +24,7 @@ end
 cancel = true;          % Cancel button waitbar
 s1Connected = [0, 0];   % Variables for know state of connection sensor's
 ts = zeros(nData,1);    % TimeSample
-sensorData = zeros(1, len);    %
+sensorData = zeros(1, numOfSensors);    %
 
 
 %% Storages
@@ -31,7 +33,7 @@ accDataS2 = zeros(nData,3);
 quatData = zeros(nData,4);
 
 %% Connection
-for n = 1:len
+for n = 1:numOfSensors
     disp('Connecting to:')
     disp(COMPort(n));
     if ( ~lpSensor(n).connect(COMPort(n), baudrate) )
@@ -42,7 +44,7 @@ end
 
 for n = s1Connected
     if n == 1
-        for m = 1:len
+        for m = 1:numOfSensors
             if (lpSensor(m).disconnect())
                 disp('sensor disconnected')
             end
@@ -53,15 +55,18 @@ for n = s1Connected
 end
 
 %% Setting streaming mode
-for n = 1:len
-    disp('Setting mode ...')
+count = 1;
+for n = 1:numOfSensors
+    fprintf('Setting mode sensor %d...\n', count);
     lpSensor(n).setStreamingMode();
+    count = count + 1;
+    disp('Setting done');
 end
 
 %% Getting sync data
 disp('Getting data ...')
 while nCount <= nData
-    for n = 1:len
+    for n = 1:numOfSensors
         if n == 1
             dS1 = lpSensor(n).getQueueSensorData();
             if (~isempty(dS1))
@@ -81,8 +86,10 @@ end
 fprintf('Getting data: %d done.\n', (nCount - 1));
 
 %% Disconnect sensors
-for n = 1:len
+count = 1;
+for n = 1:numOfSensors
     if (lpSensor(n).disconnect())
-        disp('sensor disconnected')
+        fprintf('Sensor %d disconnected\n', count);
+        count = count + 1;
     end
 end
