@@ -10,7 +10,7 @@ fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 %% Code to Serial port selection
 fprintf('%s \n',seriallist);
 connectedSerials = seriallist;
-x = input(['Which port of the list? [1->' num2str(length(connectedSerials)) ']. Zero to Exit: ']);
+x = input(['Which Serial port of the list? [1->' num2str(length(connectedSerials)) ']. Zero to Exit: ']);
 if x == 0
     return
 end
