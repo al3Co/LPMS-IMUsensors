@@ -8,3 +8,9 @@ MATLAB library to interface with LPMS Sensors. This library uses com port to com
 
 ### LpVCPConversionTool:
 https://bitbucket.org/lpresearch/openmat/downloads/LpVCPConversionTool-1.0.0-Setup.exe
+
+### USB to UART Bridge VCP Drivers
+https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers
+http://www.ftdichip.com/Drivers/VCP.htm
+http://www.intelligent-appliance.com/intelligent/product-516-(2218_2012_08_10)_USB_Virtual_COM_Port_Drivers.aspx
+
