@@ -1,16 +1,18 @@
 close all
 clear
 clc
+
 %% Initial Parameters
 samples = 400;          % number of samples to record (seconds / 100)
 nCount = 1;             % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', samples);
 
 %% Code to Serial port selection (TODO)
-% COMPortS1 = '/dev/tty.SLAB_USBtoUART';
-% COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
-COMPortS1 = 'COM3';
-COMPortS2 = 'COM4';
+COMPortS1 = '/dev/tty.SLAB_USBtoUART';
+COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
+% COMPortS1 = 'COM3';
+% COMPortS2 = 'COM4';
+
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
 lpSensor1 = lpms1();        % function lpms sensor given by LPMS
@@ -18,35 +20,45 @@ lpSensor2 = lpms2();        % function lpms sensor given by LPMS
 
 accDataS1 = zeros(samples,4);
 accDataS2 = zeros(samples,4);
+
 %% Connect to sensor 1
-disp('Connecting to Sensors')
+disp('Connecting to Sensor 1')
 if ( ~lpSensor1.connect(COMPortS1, baudrate) )
-    disp('sensor 1 not connected')
+    disp('Sensor 1 not connected')
     return 
 end
-disp('sensor 1 connected')
+disp('Sensor 1 connected')
+
 %% Connect to sensor 2
+disp('Connecting to Sensor 2')
 if ( ~lpSensor2.connect(COMPortS2, baudrate) )
-    disp('sensor 2 not connected')
+    disp('Sensor 2 not connected')
     return 
 end
-disp('sensor 2 connected')
+disp('Sensor 2 connected')
+
 %% Set streaming mode
 disp('Setting streaming mode')
 lpSensor1.setStreamingMode();
 lpSensor2.setStreamingMode();
+
 %% Loop Plot
 disp('Plotting')
 figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
-   
+oneTime = true;
 while double(get(gcf,'CurrentCharacter'))~=27
     nDataS1 = lpSensor1.hasSensorData();
     nDataS2 = lpSensor2.hasSensorData();
     for i=1:nDataS1
         dS1 = lpSensor1.getQueueSensorData();
         dS2 = lpSensor2.getQueueSensorData();
+        if oneTime
+            disp(dS1);
+            disp(dS2);
+            oneTime = false;
+        end
         if nCount == samples
             accDataS1=accDataS1(2:end, :);
             accDataS2=accDataS2(2:end, :);

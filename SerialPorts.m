@@ -13,4 +13,4 @@ disp(COMPort)
 % /dev/cu.SLAB_USBtoUART 
 % /dev/tty.SLAB_USBtoUART 
 % /dev/cu.SLAB_USBtoUART3 
-% /dev/tty.SLAB_USBtoUART3 
+% /dev/tty.SLAB_USBtoUART3

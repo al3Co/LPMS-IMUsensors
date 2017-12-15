@@ -53,7 +53,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
     end
     plot(1:T,accData)
     grid on;
-    title(sprintf('ts = %fs', d.timestamp))
+    title(sprintf('ts = %fs', (d.timestamp)))
     drawnow
 end
 

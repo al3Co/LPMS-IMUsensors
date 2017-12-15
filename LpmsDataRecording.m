@@ -3,7 +3,7 @@ clear
 clc
 
 %% Parameters
-nData = 500;    % number of samples to record (seconds / 100)
+nData = 50;    % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
@@ -71,10 +71,7 @@ end
 
 %% Plotting
 if cancel
-    plot(ts-ts(1), accData);
-    xlabel('timestamp(s)');
-    ylabel('Acc(g)');
-    grid on
+    plotingData(ts, accData, quatData);
 else
     disp('Process Canceled');
 end
