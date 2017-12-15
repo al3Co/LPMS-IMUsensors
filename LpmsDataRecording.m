@@ -19,6 +19,7 @@ disp(COMPort)
 
 %% Comunication parameters      
 baudrate = 921600;          % rate at which information is transferred
+%baudrate = 115200;          % rate at which information is transferred
 lpSensor = lpms1();          % function lpms API sensor given by LPMS
 
 cancel = true;
@@ -30,17 +31,17 @@ quatData = zeros(nData,4);
 %% Connect to sensor
 disp('Connecting sensor ...')
 if ( ~lpSensor.connect(COMPort, baudrate) )
-    disp('sensor not connected')
+    disp('Sensor not connected')
     return 
 end
-disp('sensor connected')
+disp('Sensor connected')
 
 %% Setting streaming mode
 disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
 %% Setting Wait Bar
-h = waitbar(0,'1','Name','Getting Data...',...
+h = waitbar(0,'Starting ...','Name','Getting Data...',...
             'CreateCancelBtn',...
             'setappdata(gcbf,''canceling'',1)');
 setappdata(h,'canceling',0)

@@ -7,15 +7,17 @@ nCount = 1;             % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', samples);
 
 %% Code to Serial port selection (TODO)
-COMPortS1 = '/dev/tty.SLAB_USBtoUART';
-COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
+% COMPortS1 = '/dev/tty.SLAB_USBtoUART';
+% COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
+COMPortS1 = 'COM3';
+COMPortS2 = 'COM4';
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
 lpSensor1 = lpms1();        % function lpms sensor given by LPMS
 lpSensor2 = lpms2();        % function lpms sensor given by LPMS
 
-accDataS1 = zeros(samples,3);
-accDataS2 = zeros(samples,3);
+accDataS1 = zeros(samples,4);
+accDataS2 = zeros(samples,4);
 %% Connect to sensor 1
 disp('Connecting to Sensors')
 if ( ~lpSensor1.connect(COMPortS1, baudrate) )

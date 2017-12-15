@@ -8,8 +8,10 @@ nCount = 1;     % starting number
 fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
 %% code to Serial port selection TODO
-COMPortS1 = '/dev/tty.SLAB_USBtoUART';
-COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
+% COMPortS1 = '/dev/tty.SLAB_USBtoUART';
+% COMPortS2 = '/dev/tty.SLAB_USBtoUART2';
+COMPortS1 = 'COM3';
+COMPortS2 = 'COM4';
 
 %% Comunication parameters      
 baudrate = 921600;             % rate at which information is transferred
@@ -40,11 +42,13 @@ end
 disp('Sensor 2 connected');
 
 %% Set streaming mode
-disp('Setting sensors');
+disp('Setting sensor 1');
 lpSensorS1.setStreamingMode();
+disp('Setting sensor 2');
 lpSensorS2.setStreamingMode();
+
 %% Setting Wait Bar
-h = waitbar(0,'1','Name','Getting Data...',...
+h = waitbar(0,'Starting ...','Name','Getting Data...',...
             'CreateCancelBtn',...
             'setappdata(gcbf,''canceling'',1)');
 setappdata(h,'canceling',0)
@@ -67,6 +71,8 @@ while nCount <= nData
         % Report current estimate in the waitbar's message field
         waitbar(nCount/nData,h,sprintf('Data: %d',nCount))
         nCount=nCount + 1;
+    else
+        disp('Sensors not Sync');
     end
 end
 disp('Done')
