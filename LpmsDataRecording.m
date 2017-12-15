@@ -5,7 +5,7 @@ clc
 %% Parameters
 nData = 500;    % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
-fprintf('Script to record LPMS sensor data with %d data \n', nData);
+fprintf('Script to record LPMS sensor data with %d data range.\n', nData);
 
 %% Code to Serial port selection
 fprintf('%s \n',seriallist);
@@ -21,12 +21,14 @@ disp(COMPort)
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms1();          % function lpms API sensor given by LPMS
 
+cancel = true;
 ts = zeros(nData,1);
 accData = zeros(nData,3);
 quatData = zeros(nData,4);
 
 
 %% Connect to sensor
+disp('Connecting sensor ...')
 if ( ~lpSensor.connect(COMPort, baudrate) )
     disp('sensor not connected')
     return 
@@ -34,6 +36,7 @@ end
 disp('sensor connected')
 
 %% Setting streaming mode
+disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
 %% Setting Wait Bar
@@ -47,6 +50,7 @@ disp('Accumulating sensor data')
 while nCount <= nData
     d = lpSensor.getQueueSensorData();
     if getappdata(h,'canceling')
+        cancel = false;
         break
     end
     if (~isempty(d))
@@ -58,13 +62,18 @@ while nCount <= nData
         nCount=nCount + 1;
     end
 end
+delete(h)
 disp('Done')
 if (lpSensor.disconnect())
     disp('sensor disconnected')
 end
 
 %% Plotting
-plot(ts-ts(1), accData);
-xlabel('timestamp(s)');
-ylabel('Acc(g)');
-grid on
+if cancel
+    plot(ts-ts(1), accData);
+    xlabel('timestamp(s)');
+    ylabel('Acc(g)');
+    grid on
+else
+    disp('Process Canceled');
+end
