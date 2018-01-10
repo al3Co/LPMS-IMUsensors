@@ -1,9 +1,17 @@
-function DrawRotation (x, y, z)
+function DrawRotation (roll, pitch, yaw)
 % Como ejemplo donde  R = rpy2r(vicon_angle.roll(i),vicon_angle.pitch(i),vicon_angle.yaw(i));
 length = 0.1;
+az=15;
+el=64;
+view(az,el);
+grid on;
+xlabel('x', 'fontsize',16);
+ylabel('y', 'fontsize',16);
+zlabel('z', 'fontsize',16);
+%h_legend=legend('X','Y','Z');
 
 %R = rpy2r(-20,40,-10);
-R = rpy2r(x, y, z);
+R = rpy2r(roll, pitch, yaw);
 % generate axis vectors
 tx = [length,0.0,0.0];
 ty = [0.0,length,0.0];
