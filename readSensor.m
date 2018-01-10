@@ -1,11 +1,11 @@
-%% This is gonna be a function, clear this part and make as function
+%% This is a script that reads data from a single sensor and stores it in a variable
 close all
 clear
 clc
 t = cputime;
 
 %% Parameters
-nData = 100;     % number of samples to record (seconds / 100)
+nData = 50;     % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to initialize sensor with %d data range.\n', nData);
 
@@ -13,21 +13,22 @@ fprintf('Script to initialize sensor with %d data range.\n', nData);
 COMPort = COMPort();
 numOfSensors = length(COMPort);
 if numOfSensors ~= 1
-    fprintf('Sensors connected: %d. Review your connections.\n', numOfSensors);
-    e = cputime-t
+    fprintf('Sensor(s) port(s) connected: %d. Review your connections.\n', numOfSensors);
+    timeInterval = cputime - t;
+    fprintf('Total Time: %f.\n', timeInterval);
     return
 else
-    fprintf('%d sensors connected.\n', numOfSensors);
+    fprintf('%d Sensor por connected.\n', numOfSensors);
 end
 
-%% Comunication parameters      
+%% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
-%baudrate = 576000;          % rate at which information is transferred
 lpSensor = lpms1();          % function lpms API sensor given by LPMS
 
 
 %% Connect to sensor
-disp('Connecting sensor ...')
+
+disp('Connecting to sensor ...')
 if ( ~lpSensor.connect(COMPort, baudrate) )
     disp('Sensor not connected')
     return 
@@ -41,7 +42,7 @@ emptyCounter = 0;
 counter = 0;
 
 %% Reading Data
-disp('Accumulating sensor data 1')
+disp('Accumulating data...')
 while nCount <= nData
     d = lpSensor.getQueueSensorData();
     disp(d)
@@ -53,11 +54,12 @@ while nCount <= nData
     counter = counter + 1;
 end
 
+%% Print information from reading
 fprintf('Times with empty data: %d.\n', emptyCounter);
 fprintf('Times on cycle: %d.\n', counter);
 disp('Done')
 if (lpSensor.disconnect())
-    disp('sensor disconnected')
+    disp('Sensor disconnected')
 end
-e = cputime-t;
-disp(e)
+timeInterval = cputime - t;
+fprintf('Total Time: %f.\n', timeInterval);

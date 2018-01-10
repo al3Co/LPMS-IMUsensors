@@ -1,29 +1,31 @@
 close all
 clear
 clc
+t = cputime;
 
 %% Parameters
-T = 400;        % number of samples to record (seconds / 100)
+T = 400;        % number of samples to view on plot (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', T);
 
 %% Code to Serial port selection
-fprintf('%s \n',seriallist);
-connectedSerials = seriallist;
-x = input(['Which port of the list? [1->' num2str(length(connectedSerials)) ']. Zero to Exit: ']);
-if x == 0
+COMPort = COMPort();
+numOfSensors = length(COMPort);
+if numOfSensors ~= 1
+    fprintf('Sensors ports connected: %d. Review your connections.\n', numOfSensors);
+    timeInterval = cputime - t;
+    fprintf('Total Time: %f.\n', timeInterval);
     return
+else
+    fprintf('%d Sensor ports connected.\n', numOfSensors);
 end
-COMPort = connectedSerials(x);
-disp(COMPort)
 
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms1();          % function lpms sensor given by LPMS
 
+%% Data saving
 accData = zeros(T,3);
-
-
 
 %% Connect to sensor
 if ( ~lpSensor.connect(COMPort, baudrate) )
@@ -32,7 +34,8 @@ if ( ~lpSensor.connect(COMPort, baudrate) )
 end
 disp('sensor connected')
 
-%% Set streaming mode
+%% Setting streaming mode
+disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
 %% Loop Plot
