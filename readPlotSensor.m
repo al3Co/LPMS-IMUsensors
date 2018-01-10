@@ -25,7 +25,12 @@ baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms1();          % function lpms sensor given by LPMS
 
 %% Data saving
+gyrData = zeros(T,3);
 accData = zeros(T,3);
+magData = zeros(T,3);
+quatData = zeros(T,4);
+eulerData = zeros(T,3);
+linAccData = zeros(T,3);
 
 %% Connect to sensor
 if ( ~lpSensor.connect(COMPort, baudrate) )
@@ -48,14 +53,14 @@ while double(get(gcf,'CurrentCharacter'))~=27
     for i=1:nData
         d = lpSensor.getQueueSensorData();
         if nCount == T
-            accData=accData(2:end, :);
+            magData = magData(2:end, :);
         else
             nCount = nCount + 1;
         end
-        accData(nCount,:) = d.acc;
+        magData(nCount,:) = d.mag;
     end
     if nData ~=0
-        plot(1:T,accData)
+        plot(1:T,magData)
         grid on;
         title(sprintf('ts = %fs', (d.timestamp)))
         drawnow
