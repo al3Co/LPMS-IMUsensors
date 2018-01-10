@@ -1,13 +1,26 @@
-function y = COMPort()
-if ismac
-    COMPort = '/dev/tty.SLAB_USBtoUART';
+function COM = COMPort()
+%fprintf('%s \n',seriallist);
+connectedSerials = seriallist;
+if ismac || isunix
+    pattern = '/dev/tty.SLAB_USBtoUART';
+    TF = contains(connectedSerials,pattern);
+    for n = 1: length(connectedSerials)
+        if TF(n) == 0
+            if length(connectedSerials) == 1
+                connectedSerials = [];
+            else
+                connectedSerials(n) = '';
+            end
+            
+        end
+    end
+    connectedSerials(strcmp('',connectedSerials)) = [];
+    COMPort = connectedSerials;
 elseif ispc
-    COMPort = 'COM3';
-elseif isunix
-    COMPort = '/dev/tty.SLAB_USBtoUART';
+    COMPort = connectedSerials;
 else
     disp('Platform not supported')
     return
 end
-y = COMPort; 
+COM = COMPort;
 end
