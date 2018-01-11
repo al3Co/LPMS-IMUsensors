@@ -18,7 +18,7 @@ if numOfSensors ~= 1
     fprintf('Total Time: %f.\n', timeInterval);
     return
 else
-    fprintf('%d Sensor por connected.\n', numOfSensors);
+    fprintf('%d Serial(s) port found.\n', numOfSensors);
 end
 
 %% Comunication parameters
