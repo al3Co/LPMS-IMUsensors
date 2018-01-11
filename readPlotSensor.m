@@ -60,7 +60,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
         end
         magData(nCount,:) = d.mag;
     end
-    if nData ~=0
+    if nData ~= 0
         plot(1:T,magData)
         grid on;
         title(sprintf('Time Stamp = %fs', (d.timestamp)))
