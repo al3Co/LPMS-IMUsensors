@@ -52,6 +52,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
     nData = lpSensor.hasSensorData();
     for i=1:nData
         d = lpSensor.getQueueSensorData();
+        timestamp = d.timestamp;
         if nCount == T
             magData = magData(2:end, :);
         else
