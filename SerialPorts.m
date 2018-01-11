@@ -2,17 +2,27 @@
 % You choose the port you want to connect
 clear all
 clc
-fprintf('%s \n',seriallist);
-prompt = 'Select port? [1-16] Zero to Exit: ';
+serials = seriallist;
+len = length(seriallist);
+for serialPort = 1:len
+    fprintf('%d - %s \n', serialPort, serials(serialPort));
+end
+prompt = (['Select port? [' num2str(len) ' available(s)]. Zero to Exit: ']);
 x = input(prompt);
+
 if x == 0
+    disp('Aborted')
     return
 end
-sCount = 1;
-for n = seriallist
-    if sCount == x
-        COMPort = n;
+
+if x > len
+    disp('Invalid number')
+    return
+end
+
+for n = 1:len
+    if n == x
+        COMPort = serials(n);
     end
-    sCount = sCount + 1;
 end
 disp(COMPort)
