@@ -1,6 +1,7 @@
 function DrawRotation (roll, pitch, yaw)
 % Como ejemplo donde  R = rpy2r(vicon_angle.roll(i),vicon_angle.pitch(i),vicon_angle.yaw(i));
-length = 0.1;
+clf;
+length = 10.0;
 az=15;
 el=64;
 view(az,el);
@@ -10,7 +11,6 @@ ylabel('y', 'fontsize',16);
 zlabel('z', 'fontsize',16);
 %h_legend=legend('X','Y','Z');
 
-%R = rpy2r(-20,40,-10);
 R = rpy2r(roll, pitch, yaw);
 % generate axis vectors
 tx = [length,0.0,0.0];
@@ -43,5 +43,6 @@ p1=plot3(tz_vec(:,1), tz_vec(:,2), tz_vec(:,3));
 set(p1,'Color','Red','LineWidth',1);
 grid on;
 drawnow
+
 end
 

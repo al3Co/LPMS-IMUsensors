@@ -17,7 +17,8 @@ if ismac || isunix
     connectedSerials(strcmp('',connectedSerials)) = [];
     COMPort = connectedSerials;
 elseif ispc
-    COMPort = connectedSerials;
+    %COMPort = connectedSerials;
+    COMPort = "COM3";
 else
     disp('Platform not supported')
     return

@@ -37,7 +37,7 @@ if ( ~lpSensor.connect(COMPort, baudrate) )
     disp('sensor not connected')
     return 
 end
-disp('sensor connected')
+disp('Sensor connected')
 
 %% Setting streaming mode
 disp('Setting mode ...')
@@ -47,7 +47,7 @@ lpSensor.setStreamingMode();
 figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
-   
+
 while double(get(gcf,'CurrentCharacter'))~=27
     nData = lpSensor.hasSensorData();
     for i=1:nData
@@ -63,7 +63,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
     if nData ~=0
         plot(1:T,magData)
         grid on;
-        title(sprintf('ts = %fs', (d.timestamp)))
+        title(sprintf('Time Stamp = %fs', (d.timestamp)))
         drawnow
     end
 end

@@ -48,21 +48,20 @@ figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
 disp('Plotting ...')
-%while double(get(gcf,'CurrentCharacter'))~=27
-
-while true
+while double(get(gcf,'CurrentCharacter'))~=27
+%while true
     nData = lpSensor.hasSensorData();
     for i=1:nData
         d = lpSensor.getQueueSensorData();
         if nCount == T
-            magData = magData(2:end, :);
+            accData = accData(2:end, :);
         else
             nCount = nCount + 1;
         end
-        magData(nCount,:) = d.mag;
+        accData(nCount,:) = d.acc;
     end
     if nData ~=0
-        DrawRotation(magData(nCount,1),magData(nCount,2),magData(nCount,3))
+        DrawRotation(accData(nCount,1), accData(nCount,2), accData(nCount,3))
 %         plot(1:T,magData)
 %         grid on;
 %         title(sprintf('ts = %fs', (d.timestamp)))
