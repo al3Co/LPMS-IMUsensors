@@ -41,5 +41,7 @@ p1=plot3(ty_vec(:,1), ty_vec(:,2), ty_vec(:,3));
 set(p1,'Color','Blue','LineWidth',1);
 p1=plot3(tz_vec(:,1), tz_vec(:,2), tz_vec(:,3));
 set(p1,'Color','Red','LineWidth',1);
+grid on;
+drawnow
 end
 
