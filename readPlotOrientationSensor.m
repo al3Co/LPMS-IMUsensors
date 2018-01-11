@@ -62,10 +62,6 @@ while double(get(gcf,'CurrentCharacter'))~=27
     end
     if nData ~=0
         DrawRotation(accData(nCount,1), accData(nCount,2), accData(nCount,3))
-%         plot(1:T,magData)
-%         grid on;
-%         title(sprintf('ts = %fs', (d.timestamp)))
-%         drawnow
     end
 end
 
