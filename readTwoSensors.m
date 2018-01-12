@@ -1,12 +1,16 @@
-%% This is a script that reads data from a single sensor and stores it in a variable
+%% This script reads data from two sensors and stores it in a file
 close all
 clear
 clc
 t = cputime;
 
 %% Parameters
-nData = 50;     % number of samples to record (seconds / 100)
-nCount = 0;     % starting number
+nData = 1e8;    % number of iteration cycles
+nCountS1 = 1;   % sensor data counter
+nCountS2 = 1;   % sensor data counter
+counter = 0;    % counter cycle
+dataS1 = [];    % storage variable
+dataS2 = [];    % storage variable
 fprintf('Script to initialize sensor with %d data range.\n', nData);
 
 %% Code to Serial port selection
@@ -14,9 +18,10 @@ COMPort1 = 'COM3';
 COMPort2 = 'COM4';
 
 %% Comunication parameters
-baudrate = 921600;          % rate at which information is transferred
-lpSensor1 = lpms();          % function lpms API sensor given by LPMS
-lpSensor2 = lpms1();
+baudrate = 921600;      % rate at which information is transferred
+lpSensor1 = lpms();     % function lpms API sensor given by LPMS developer
+lpSensor2 = lpms();     % function lpms API sensor given by LPMS developer
+
 
 %% Connect to sensor
 
@@ -43,34 +48,42 @@ lpSensor2.setStreamingMode();
 
 %% Reading Data
 disp('Accumulating data...')
-% write data to File
+
+%% Prepare File to save data
 fileS1 = fopen('DataS1.txt','w');
 fprintf(fileS1,'%12s %12s %12s %12s\r\n','timestamp','gyrX', 'gyrY', 'gyrZ');
 
 fileS2 = fopen('DataS2.txt','w');
 fprintf(fileS2,'%12s %12s %12s %12s\r\n','timestamp','gyrX', 'gyrY', 'gyrZ');
 
-while nCount <= nData
-    if lpSensor1.hasSensorData()
-        dS1 = lpSensor1.getQueueSensorData();
+%% Reading data from sensors
+
+while (counter < nData)
+    dS1 = lpSensor1.getQueueSensorData();
+    dS2 = lpSensor2.getQueueSensorData();
+    
+    if  ~isempty(dS1)
         disp(dS1)
-        dataS1 = [dS1.timestamp dS1.gyr];
-        fprintf(fileS1,'%12.2f %12.4f %12.4f %12.4f\r\n',dataS1);
-        nCount = nCount + 1;
+        data = [dS1.timestamp dS1.gyr];
+        dataS1(nCountS1,:) = data;
+        fprintf(fileS1,'%12.2f %12.4f %12.4f %12.4f\r\n', data);
+        nCountS1 = nCountS1 + 1;
     end
     
-    if lpSensor2.hasSensorData()
-        dS2 = lpSensor2.getQueueSensorData();
+    if  ~isempty(dS2)
         disp(dS2)
-        dataS2 = [dS2.timestamp dS2.gyr];
-        fprintf(fileS2,'%12.2f %12.4f %12.4f %12.4f\r\n',dataS2);
+        data = [dS2.timestamp dS2.gyr];
+        dataS2(nCountS2,:) = data;
+        fprintf(fileS2,'%12.2f %12.4f %12.4f %12.4f\r\n', data);
+        nCountS2 = nCountS2 + 1;
     end
+    counter = counter + 1;
 end
 fclose(fileS1);
 fclose(fileS2);
-%% Print information from reading
 
-disp('Done')
+%% Disconnecting Sensors
+disp('Disconnecting')
 if (lpSensor1.disconnect())
     disp('Sensor 1 disconnected')
 end
@@ -80,3 +93,4 @@ if (lpSensor2.disconnect())
 end
 timeInterval = cputime - t;
 fprintf('Total Time: %f.\n', timeInterval);
+
