@@ -1,5 +1,5 @@
 function DrawRotation (roll, pitch, yaw)
-% Como ejemplo donde  R = rpy2r(vicon_angle.roll(i),vicon_angle.pitch(i),vicon_angle.yaw(i));
+% Example:  R = rpy2r(vicon_angle.roll(i),vicon_angle.pitch(i),vicon_angle.yaw(i));
 clf;
 length = 10.0;
 az=15;
