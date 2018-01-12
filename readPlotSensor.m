@@ -4,7 +4,7 @@ clc
 t = cputime;
 
 %% Parameters
-T = 400;        % number of samples to view on plot (seconds / 100)
+T = 400;        % number of samples to view on plot 
 nCount = 1;     % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', T);
 
@@ -22,7 +22,7 @@ end
 
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
-lpSensor = lpms1();          % function lpms sensor given by LPMS
+lpSensor = lpms();          % function lpms sensor given by LPMS
 
 %% Data saving
 gyrData = zeros(T,3);
@@ -52,7 +52,6 @@ while double(get(gcf,'CurrentCharacter'))~=27
     nData = lpSensor.hasSensorData();
     for i=1:nData
         d = lpSensor.getQueueSensorData();
-        timestamp = d.timestamp;
         if nCount == T
             magData = magData(2:end, :);
         else
@@ -60,12 +59,11 @@ while double(get(gcf,'CurrentCharacter'))~=27
         end
         magData(nCount,:) = d.mag;
     end
-    if nData ~= 0
-        plot(1:T,magData)
-        grid on;
-        title(sprintf('Time Stamp = %fs', (d.timestamp)))
-        drawnow
-    end
+    plot(1:T,magData)
+    grid on;
+    title(sprintf('Time Stamp = %fs', (d.timestamp)))
+    axis([0 400 -120 120])
+    drawnow
 end
 
 set(gcf,'WindowStyle','normal');
