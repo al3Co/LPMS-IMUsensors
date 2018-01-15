@@ -64,17 +64,17 @@ while (counter < nData)
     
     if  ~isempty(dS1)
         disp(dS1)
-        data = [dS1.timestamp dS1.gyr];
-        dataS1(nCountS1,:) = data;
-        fprintf(fileS1,'%12.2f %12.4f %12.4f %12.4f\r\n', data);
+        tmpData = [dS1.timestamp dS1.gyr];
+        dataS1(nCountS1,:) = tmpData;
+        fprintf(fileS1,'%12.2f %12.4f %12.4f %12.4f\r\n', tmpData);
         nCountS1 = nCountS1 + 1;
     end
     
     if  ~isempty(dS2)
         disp(dS2)
-        data = [dS2.timestamp dS2.gyr];
-        dataS2(nCountS2,:) = data;
-        fprintf(fileS2,'%12.2f %12.4f %12.4f %12.4f\r\n', data);
+        tmpData = [dS2.timestamp dS2.gyr];
+        dataS2(nCountS2,:) = tmpData;
+        fprintf(fileS2,'%12.2f %12.4f %12.4f %12.4f\r\n', tmpData);
         nCountS2 = nCountS2 + 1;
     end
     counter = counter + 1;
