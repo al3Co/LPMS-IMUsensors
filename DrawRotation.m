@@ -1,7 +1,8 @@
-function DrawRotation (roll, pitch, yaw)
+function DrawRotation (yaw, pitch, roll)
 % Example:  R = rpy2r(vicon_angle.roll(i),vicon_angle.pitch(i),vicon_angle.yaw(i));
 clf;
-length = 10.0;
+
+length = 1.0;
 az=15;
 el=64;
 view(az,el);
@@ -35,8 +36,21 @@ tz_vec(2,:) = t_z_new + origin';
 hold on;
 
 % Plot the direction vectors at the point
+%Initial
+vX=[1 0 0];
+vY=[0 1 0];
+vZ=[0 0 1];
+vX=[vX;origin];
+vY=[vY;origin];
+vZ=[vZ;origin];
+plot3(vX(:,1),vX(:,2),vX(:,3),'g')
+plot3(vY(:,1),vY(:,2),vY(:,3),'b')
+plot3(vZ(:,1),vZ(:,2),vZ(:,3),'r')
+%Actual
 p1=plot3(tx_vec(:,1), tx_vec(:,2), tx_vec(:,3));
 set(p1,'Color','Green','LineWidth',1);
+p1=plot3(0, 1, 1);
+set(p1,'Color','Green','LineWidth',3);
 p1=plot3(ty_vec(:,1), ty_vec(:,2), ty_vec(:,3));
 set(p1,'Color','Blue','LineWidth',1);
 p1=plot3(tz_vec(:,1), tz_vec(:,2), tz_vec(:,3));
