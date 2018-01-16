@@ -5,7 +5,7 @@ clc
 t = cputime;
 
 %% Parameters
-nData = 50;     % number of samples to record (seconds / 100)
+nData = 500;     % number of samples to record (seconds / 100)
 nCount = 1;     % starting number
 fprintf('Script to initialize sensor with %d data range.\n', nData);
 
@@ -23,7 +23,7 @@ end
 
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
-lpSensor = lpms1();          % function lpms API sensor given by LPMS
+lpSensor = lpms();          % function lpms API sensor given by LPMS
 
 
 %% Connect to sensor
@@ -38,8 +38,10 @@ disp('Sensor connected')
 %% Setting streaming mode
 disp('Setting mode ...')
 lpSensor.setStreamingMode();
+
 emptyCounter = 0;
 counter = 0;
+dataIMU = [];
 
 %% Reading Data
 disp('Accumulating data...')
@@ -47,6 +49,9 @@ while nCount <= nData
     d = lpSensor.getQueueSensorData();
     disp(d)
     if (~isempty(d))
+        A = d.acc;
+        [r, q, p] = quat2angle(d.quat);
+        dataIMU(nCount,:) = [d.timestamp, A(1), A(2), A(3), p, q, r];
         nCount=nCount + 1;
     elseif (isempty(d))
         emptyCounter = emptyCounter + 1;
