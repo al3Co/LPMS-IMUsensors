@@ -19,7 +19,7 @@ lpSensor2 = lpms();
 dataS1 = [];
 dataS2 = [];
 
-%% Data saving
+%% Data saving varaibles
 gyrData = zeros(T,3);
 accData = zeros(T,3);
 magDataS1 = zeros(T,3);
