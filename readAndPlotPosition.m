@@ -68,3 +68,5 @@ if (lpSensor.disconnect())
 end
 timeInterval = cputime - t;
 fprintf('Total Time: %f.\n', timeInterval);
+initial = [0 0 0; 0 0 0; 0 0 0]; 
+find_position(dataIMU,initial)
