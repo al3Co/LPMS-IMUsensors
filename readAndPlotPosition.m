@@ -2,10 +2,9 @@
 close all
 clear
 clc
-t = cputime;
 
-%% Parameters
-nData = 500;     % number of samples to record (seconds / 100)
+%% Reading parameters
+nData = 500;    % number of samples to record (seconds = nData/ 100)
 nCount = 1;     % starting number
 fprintf('Script to initialize sensor with %d data range.\n', nData);
 
@@ -25,7 +24,6 @@ end
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms();          % function lpms API sensor given by LPMS
 
-
 %% Connect to sensor
 
 disp('Connecting to sensor ...')
@@ -39,9 +37,19 @@ disp('Sensor connected')
 disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
+%% Preparing variables
 emptyCounter = 0;
 counter = 0;
 dataIMU = [];
+
+timeStamp = [];
+gyr = [];
+acc = [];
+mag = [];
+angVel = [];
+quat = [];
+euler = [];
+linAcc = [];
 
 %% Reading Data
 disp('Accumulating data...')
@@ -49,9 +57,23 @@ while nCount <= nData
     d = lpSensor.getQueueSensorData();
     disp(d)
     if (~isempty(d))
-        A = d.acc;
+        if nCount == 1
+            timeIni = d.timestamp;
+        end
+        timeStamp(nCount,:) = d.timestamp;
+        gyr(nCount,:) = d.gyr;
+        acc(nCount,:) = d.acc;
+        mag(nCount,:) = d.mag;
+        angVel(nCount,:) = d.angVel;
+        quat(nCount,:) = d.quat;
+        euler(nCount,:) = d.euler;
+        linAcc(nCount,:) = d.linAcc;
+        
+        tmpLinAcc = d.linAcc;
+        tmpAcc = d.acc;
+        tmpangVel = d.angVel;
         [r, q, p] = quat2angle(d.quat);
-        dataIMU(nCount,:) = [d.timestamp, A(1), A(2), A(3), p, q, r];
+        dataIMU(nCount,:) = [(d.timestamp - timeIni), tmpAcc(1), tmpAcc(2), tmpAcc(3), tmpangVel(1), tmpangVel(2), tmpangVel(3)];
         nCount=nCount + 1;
     elseif (isempty(d))
         emptyCounter = emptyCounter + 1;
@@ -66,7 +88,15 @@ disp('Done')
 if (lpSensor.disconnect())
     disp('Sensor disconnected')
 end
-timeInterval = cputime - t;
-fprintf('Total Time: %f.\n', timeInterval);
+
+%% Plotting
 initial = [0 0 0; 0 0 0; 0 0 0]; 
-find_position(dataIMU,initial)
+funcFindPosition(dataIMU,initial);
+
+% figure,plot3(linAcc(:,1),linAcc(:,2),linAcc(:,3));
+% grid on
+% axis on
+% xlabel('x');
+% ylabel('y');
+% zlabel('z');
+% title('trajectory of the body');
