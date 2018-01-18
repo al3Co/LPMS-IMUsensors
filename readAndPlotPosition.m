@@ -1,31 +1,17 @@
-%% This is a script that reads data from a single sensor and stores it in a variable
+%% This is a script that reads data from a single sensor and plot its orientation
 close all
 clear
 clc
 
-%% Reading parameters
-nData = 500;    % number of samples to record (seconds = nData/ 100)
-nCount = 1;     % starting number
-fprintf('Script to initialize sensor with %d data range.\n', nData);
-
-%% Code to Serial port selection
-COMPort = COMPort();
-numOfSensors = length(COMPort);
-if numOfSensors ~= 1
-    fprintf('Sensor(s) port(s) connected: %d. Review your connections.\n', numOfSensors);
-    timeInterval = cputime - t;
-    fprintf('Total Time: %f.\n', timeInterval);
-    return
-else
-    fprintf('%d Serial(s) port found.\n', numOfSensors);
-end
+%% Parameters
+fprintf('Script to plot the orientation');
 
 %% Comunication parameters
+COMPort = "COM3";
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms();          % function lpms API sensor given by LPMS
 
 %% Connect to sensor
-
 disp('Connecting to sensor ...')
 if ( ~lpSensor.connect(COMPort, baudrate) )
     disp('Sensor not connected')
@@ -37,66 +23,31 @@ disp('Sensor connected')
 disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
-%% Preparing variables
-emptyCounter = 0;
-counter = 0;
-dataIMU = [];
+a1 = 1;         % length arm
+a2 = 1;         % length elbow 
+theta1 = 0;     % initial angle a1
+theta2 = 0;     % initial angle a2
+data = [a1, a2, theta1 , theta2];
+%% Loop Plot
+disp('Plotting ...')
+figure('doublebuffer','on', ...
+       'CurrentCharacter','a', ...
+       'WindowStyle','modal')
 
-timeStamp = [];
-gyr = [];
-acc = [];
-mag = [];
-angVel = [];
-quat = [];
-euler = [];
-linAcc = [];
-
-%% Reading Data
-disp('Accumulating data...')
-while nCount <= nData
+while double(get(gcf,'CurrentCharacter'))~=27
+    clf;
     d = lpSensor.getQueueSensorData();
     disp(d)
     if (~isempty(d))
-        if nCount == 1
-            timeIni = d.timestamp;
-        end
-        timeStamp(nCount,:) = d.timestamp;
-        gyr(nCount,:) = d.gyr;
-        acc(nCount,:) = d.acc;
-        mag(nCount,:) = d.mag;
-        angVel(nCount,:) = d.angVel;
-        quat(nCount,:) = d.quat;
-        euler(nCount,:) = d.euler;
-        linAcc(nCount,:) = d.linAcc;
-        
-        tmpLinAcc = d.linAcc;
-        tmpAcc = d.acc;
-        tmpangVel = d.angVel;
-        [r, q, p] = quat2angle(d.quat);
-        dataIMU(nCount,:) = [(d.timestamp - timeIni), tmpAcc(1), tmpAcc(2), tmpAcc(3), tmpangVel(1), tmpangVel(2), tmpangVel(3)];
-        nCount=nCount + 1;
-    elseif (isempty(d))
-        emptyCounter = emptyCounter + 1;
+        [yaw, pitch, roll] = quat2angle(d.quat);
+        data(4) = roll; % yaw or roll, depending the position of the sensor on the arm-frame
+        funcDrawSensor(data);
     end
-    counter = counter + 1;
 end
+set(gcf,'WindowStyle','normal');
 
-%% Print information from reading
-fprintf('Times with empty data: %d.\n', emptyCounter);
-fprintf('Times on cycle: %d.\n', counter);
+%% Disconnecting
 disp('Done')
 if (lpSensor.disconnect())
     disp('Sensor disconnected')
 end
-
-%% Plotting
-initial = [0 0 0; 0 0 0; 0 0 0]; 
-funcFindPosition(dataIMU,initial);
-
-% figure,plot3(linAcc(:,1),linAcc(:,2),linAcc(:,3));
-% grid on
-% axis on
-% xlabel('x');
-% ylabel('y');
-% zlabel('z');
-% title('trajectory of the body');
