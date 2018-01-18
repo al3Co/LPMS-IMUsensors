@@ -3,7 +3,7 @@ clear
 clc
 
 %% Parameters
-T = 400;        % number of samples to view on plot
+T = 150;        % number of samples to view on plot
 nCountS1 = 1;   % starting number
 nCountS2 = 1;   % starting number
 fprintf('Script to real time plot LPMS sensor data with %d data width \n', T);
@@ -72,7 +72,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
         else
             nCountS1 = nCountS1 + 1;
         end
-        magDataS1(nCountS1,:) = dS1.mag;
+        magDataS1(nCountS1,:) = dS1.linAcc;
     end
     
     if ~isempty(dS1)    % if there is data, save in variable
@@ -81,7 +81,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
         else
             nCountS2 = nCountS2 + 1;
         end
-        magDataS2(nCountS2,:) = dS2.mag;
+        magDataS2(nCountS2,:) = dS2.linAcc;
     end
     
     % plotting
@@ -95,7 +95,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
     title(sprintf('Time Stamp S2 = %fs', (dS2.timestamp)))
     grid on;
     
-    axis([ax1 ax2],[0 400 -80 50])  
+    %axis([ax1 ax2],[0 400 -80 50])  
     drawnow
 end
 
