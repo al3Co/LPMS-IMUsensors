@@ -47,7 +47,7 @@ lpSensor.setStreamingMode();
 figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
-
+set(gcf,'WindowStyle','normal');
 while double(get(gcf,'CurrentCharacter'))~=27
     nData = lpSensor.hasSensorData();
     for i=1:nData
@@ -57,16 +57,16 @@ while double(get(gcf,'CurrentCharacter'))~=27
         else
             nCount = nCount + 1;
         end
-        magData(nCount,:) = d.mag;
+        magData(nCount,:) = d.linAcc;
     end
     plot(1:T,magData)
     grid on;
     title(sprintf('Time Stamp = %fs', (d.timestamp)))
-    axis([0 400 -120 120])
+    %axis([0 400 -120 120])
     drawnow
 end
 
-set(gcf,'WindowStyle','normal');
+
 if (lpSensor.disconnect())
     disp('sensor disconnected')
 end
