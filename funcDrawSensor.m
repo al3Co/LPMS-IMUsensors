@@ -29,13 +29,23 @@ A2 = [cos(theta2) -sin(theta2) 0 a2*cos(theta2);
 T10 = A1;
 T20 = A1*A2;
 
+xS1 = (0 + T10(1,4))/2;
+yS1 = (0 + T10(2,4))/2;
+circ1Pos = [(xS1) (yS1) (0.1*a1) (0.1*a1)]; %[x y w h]
+
+xS2 = (T10(1,4) + T20(1,4))/2;
+yS2 = (T10(2,4) + T20(2,4))/2;
+circ2Pos = [(xS2) (yS2) (0.1*a2) (0.1*a2)]; %[x y w h]
+
 grid on;
 hold on;
+rectangle('Position',circ1Pos,'Curvature',[1 1],'FaceColor',[1 0 0])
+rectangle('Position',circ2Pos,'Curvature',[1 1],'FaceColor',[0 1 0])
 plot([0;T10(1,4)],[0;T10(2,4)],'r')
 plot([T10(1,4);T20(1,4)],[T10(2,4);T20(2,4)],'g')
 % axis tight
 % axis equal
-axis([-2 2 -2 2])
+axis([(-2*a1) (2*a1) (-2*a2) (2*a2)])
 
 % % for 3D plot:
 % % A1 vector
