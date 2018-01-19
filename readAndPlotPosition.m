@@ -36,7 +36,8 @@ figure('doublebuffer','on', ...
 
 while double(get(gcf,'CurrentCharacter'))~=27
     clf;
-    d = lpSensor.getQueueSensorData();
+    %d = lpSensor.getQueueSensorData();
+    d = lpSensor.getCurrentSensorData();
     disp(d)
     if (~isempty(d))
         [yaw, pitch, roll] = quat2angle(d.quat);
