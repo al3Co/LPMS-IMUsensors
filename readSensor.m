@@ -6,7 +6,7 @@ t = cputime;
 
 %% Parameters
 nData = 500;     % number of samples to record (seconds / 100)
-nCount = 1;     % starting number
+nCount = 1;      % starting number
 fprintf('Script to initialize sensor with %d data range.\n', nData);
 
 %% Code to Serial port selection
