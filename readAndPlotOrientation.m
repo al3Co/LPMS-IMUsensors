@@ -30,10 +30,11 @@ figure('doublebuffer','on', ...
        'WindowStyle','modal')
 
 while double(get(gcf,'CurrentCharacter'))~=27
-    d = lpSensor.getQueueSensorData();
+    %d = lpSensor.getQueueSensorData();
+    d = lpSensor.getCurrentSensorData();
     if (~isempty(d))
         [yaw, pitch, roll] = quat2angle(d.quat);
-        DrawRotation(yaw, pitch, roll);
+        funcDrawRotation(yaw, pitch, roll);
     end
 end
 set(gcf,'WindowStyle','normal');
