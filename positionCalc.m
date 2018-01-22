@@ -4,9 +4,9 @@ clc
 t = cputime;
 
 %% Parameters
-T = 400;        % number of samples to view on plot 
-nCount = 1;     % starting number
-fprintf('Script to real time plot position with %d data width \n', T);
+nData = 1e2;     % number of samples to record (seconds / 100)
+nCount = 1;      % starting number
+fprintf('Script to initialize sensor with %d data range.\n', nData);
 
 %% Code to Serial port selection
 COMPort1 = 'COM3';
@@ -19,7 +19,7 @@ lpSensor = lpms();          % function lpms sensor given by LPMS
 linAccData = [];
 
 %% Connect to sensor
-if ( ~lpSensor.connect(COMPort, baudrate) )
+if ( ~lpSensor.connect(COMPort1, baudrate) )
     disp('sensor not connected')
     return 
 end
@@ -29,21 +29,30 @@ disp('Sensor connected')
 disp('Setting mode ...')
 lpSensor.setStreamingMode();
 
-vX = 0;
-dposX = 0;
-
 %% Loop Plot
 
-while true
+L1 = 1;
+L2 = 2;
+
+disp('Plotting ...')
+figure('doublebuffer','on', ...
+       'CurrentCharacter','a', ...
+       'WindowStyle','modal')
+set(gcf,'WindowStyle','normal');
+while double(get(gcf,'CurrentCharacter'))~=27
     %d = lpSensor.getCurrentSensorData();
     d = lpSensor.getQueueSensorData();
     if (~isempty(d))
-        linAcc_now = d.linAcc;
-        vX = linAcc_now(1) +(abs(linAcc_now(1) - vX)/2)*(d.timestamp);
-        posX = 
-        disp(vX)
+        theta_Acc = d.acc;
+        theta_Mag = d.mag;
+        
+        % Sacar la función de graficar de la func del cálculo
+        [X, Y, Z] = funcCalcPosition(theta_Acc, theta_Mag);
+        
     end
+    
 end
+disp('End');
 
 if (lpSensor.disconnect())
     disp('sensor disconnected')
