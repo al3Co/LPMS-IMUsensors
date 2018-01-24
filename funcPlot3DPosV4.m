@@ -61,7 +61,7 @@ mArrow3([0 0 0],[P30(1) P30(2) P30(3)], 'facealpha', 0.5, 'color', 'red', 'stemW
 mArrow3([P30(1) P30(2) P30(3)],[P60(1) P60(2) P60(3)], 'facealpha', 0.5, 'color', 'blue', 'stemWidth', 0.02);
 
 % % final vector
-%plot3([0;PEE0(1)],[0;PEE0(2)],[0;PEE0(1)],'b')
+%plot3([0;P60(1)],[0;P60(2)],[0;P60(1)],'b')
 
 xlabel('X')
 ylabel('Y')
