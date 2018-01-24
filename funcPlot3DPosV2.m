@@ -7,8 +7,7 @@
 %4     theta L1 (angle elbow theta2)
 %5     theta L2 (angle wirst theta2)
 function funcPlot3DPosV2(data)
-
-
+%% System Configuration
 clf;
 theta1 = data(3);     % shoulder sensor roll or pitch or yaw depending on sensor position
 theta2 = data(4);     % shoulder sensor roll or pitch or yaw depending on sensor position
@@ -43,6 +42,14 @@ PEE0 = R20*P12 + R30*P23;   % second point
 Xee = -sin(theta2)*L1 +(cos(theta2)*cos(theta3) - sin(theta2)*sin(theta3))*L2;
 Yee = sin(theta1)*cos(theta1)*L1 + ((sin(theta1)*sin(theta2)*cos(theta3)) + sin(theta1)*cos(theta2)*sin(theta3))*L2;
 Zee = -(cos(theta1)*cos(theta2)*L1) - ((cos(theta1)*sin(theta2)*cos(theta3)) + (cos(theta1)*cos(theta2)*cos(theta3)))*L2;
+
+%% Inverse Kinematics
+
+THETA_1 = (pi/4) + atan2(PEE0(2), PEE0(1));
+THETA_3 = (PI/4) + acos((abs(sqrt(PEE0(1)^2 + PEE0(2)^2 + PEE0(3)^2)) - L1^2 - L2^2)/ 2*(L1 * L2));
+PEE1 = R10 * PEE0;
+THETA_2 = atan2(PEE1(2), PEE1(1)) - THETA_3;
+
 
 %% plot
 grid on;
