@@ -63,10 +63,10 @@ height=500;
 set(gcf,'units','points','position',[x0,y0,width,height])
 
 while double(get(gcf,'CurrentCharacter'))~=27
-%     dS1 = lpSensor1.getQueueSensorData();   % getting queue data S1
-%     dS2 = lpSensor2.getQueueSensorData();   % getting queue data S2
-    dS1 = lpSensor1.getCurrentSensorData();   % getting current data S1
-    dS2 = lpSensor2.getCurrentSensorData();   % getting current data S2
+    dS1 = lpSensor1.getQueueSensorData();   % getting queue data S1
+    dS2 = lpSensor2.getQueueSensorData();   % getting queue data S2
+%     dS1 = lpSensor1.getCurrentSensorData();   % getting current data S1
+%     dS2 = lpSensor2.getCurrentSensorData();   % getting current data S2
     
     if ~isempty(dS1)    % if there is data, save in variable
         if nCountS1 == T
