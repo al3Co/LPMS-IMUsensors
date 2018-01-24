@@ -9,8 +9,8 @@ close all
 clear
 clc
 
-%% Parameters
-fprintf('Script to plot the orientation');
+%% Initial disp
+disp('Script to plot position from two LPMS-URS2 sensors')
 
 %% Code to Serial port selection
 COMPort1 = 'COM3';      % COM port to which the sensor 1 is connected
@@ -18,11 +18,11 @@ COMPort2 = 'COM4';      % COM port to which the sensor 2 is connected
 
 %% Comunication parameters
 baudrate = 921600;          % rate at which information is transferred
-lpSensor1 = lpms();         % function lpms API sensor 1 given by LPMS
-lpSensor2 = lpms();         % function lpms API sensor 2 given by LPMS
+lpSensor1 = lpms();         % object lpms API sensor 1 given by LPMS
+lpSensor2 = lpms();         % object lpms API sensor 2 given by LPMS
 
 %% Connect to sensor
-% Method to connect to the sensors
+% Method to connect to the sensors using attributes from lpms object
 disp('Connecting to sensors ...')
 if ( ~lpSensor1.connect(COMPort1, baudrate) )
     disp('Sensor not connected')
