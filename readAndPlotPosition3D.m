@@ -63,7 +63,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
         [X, Y, Z] = quat2angle(d2.quat, 'XYZ');     % convert quaternions to angles roll, pitch and yaw
         data(6) = X; data(7) = Y; data(8) = Z;
     end
-    funcPlot3DPosV4(data);
+    funcPlot3DPosV5(data);
 end
 
 %% Disconnecting
