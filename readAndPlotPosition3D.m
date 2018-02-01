@@ -24,13 +24,9 @@ lpSensor2 = lpms();         % object lpms API sensor 2 given by LPMS
 %% Connect to sensor
 % Method to connect to the sensors using attributes from lpms object
 disp('Connecting to sensors ...')
-if ( ~lpSensor1.connect(COMPort1, baudrate) )
-    disp('Sensor not connected')
+if ( ~lpSensor1.connect(COMPort1, baudrate) || ~lpSensor2.connect(COMPort2, baudrate) )
+    disp('Sensors not connected')
     return 
-end
-if ( ~lpSensor2.connect(COMPort2, baudrate) )
-    disp('Sensor 2 not connected')
-    return
 end
 disp('Sensors connected')
 
@@ -68,9 +64,6 @@ end
 
 %% Disconnecting
 disp('Done')
-if (lpSensor1.disconnect())
-    disp('Sensor 1 disconnected')
-end
-if (lpSensor2.disconnect())
-    disp('Sensor 2 disconnected')
+if (lpSensor1.disconnect() && lpSensor2.disconnect())
+    disp('Sensors disconnected')
 end
