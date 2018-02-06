@@ -29,20 +29,14 @@ eulerData = zeros(T,3);
 linAccData = zeros(T,3);
 
 %% Connect to sensor
-
-disp('Connecting to sensor 1 ...')
-if ( ~lpSensor1.connect(COMPort1, baudrate) )
-    disp('Sensor 1 not connected')
+%% Connect to sensor
+% Method to connect to the sensors using attributes from lpms object
+disp('Connecting to sensors ...')
+if ( ~lpSensor1.connect(COMPort1, baudrate) || ~lpSensor2.connect(COMPort2, baudrate) )
+    disp('Sensors not connected')
     return 
 end
-disp('Sensor 1 connected')
-
-disp('Connecting to sensor 2 ...')
-if ( ~lpSensor2.connect(COMPort2, baudrate) )
-    disp('Sensor 2 not connected')
-    return
-end
-disp('Sensor 2 connected')
+disp('Sensors connected')
 
 %% Setting streaming mode
 disp('Setting mode sensor 1 ...')
@@ -104,12 +98,8 @@ while double(get(gcf,'CurrentCharacter'))~=27
 end
 
 %% Disconnecting Sensors
-
 disp('Done')
-if (lpSensor1.disconnect())
-    disp('Sensor 1 disconnected')
+if (lpSensor1.disconnect() && lpSensor2.disconnect())
+    disp('Sensors disconnected')
 end
 
-if (lpSensor2.disconnect())
-    disp('Sensor 2 disconnected')
-end
