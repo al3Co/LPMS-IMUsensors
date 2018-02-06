@@ -3,6 +3,7 @@ function funcDrawRotation (yaw, pitch, roll)
 clf;
 
 length = 1.0;
+
 az=15;
 el=64;
 view(az,el);
@@ -43,9 +44,12 @@ vZ=[0 0 1];
 vX=[vX;origin];
 vY=[vY;origin];
 vZ=[vZ;origin];
+
+% fixed
 plot3(vX(:,1),vX(:,2),vX(:,3),'g')
 plot3(vY(:,1),vY(:,2),vY(:,3),'b')
 plot3(vZ(:,1),vZ(:,2),vZ(:,3),'r')
+
 %Actual
 p1=plot3(tx_vec(:,1), tx_vec(:,2), tx_vec(:,3));
 set(p1,'Color','Green','LineWidth',1);
@@ -56,6 +60,7 @@ set(p1,'Color','Blue','LineWidth',1);
 p1=plot3(tz_vec(:,1), tz_vec(:,2), tz_vec(:,3));
 set(p1,'Color','Red','LineWidth',1);
 grid on;
+axis([-1 1 -1 1 -1 1])
 drawnow
 
 end
