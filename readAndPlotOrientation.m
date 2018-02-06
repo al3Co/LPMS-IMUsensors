@@ -7,7 +7,7 @@ clc
 fprintf('Script to plot the orientation');
 
 %% Comunication parameters
-COMPort = "COM3";
+COMPort = "COM4";
 baudrate = 921600;          % rate at which information is transferred
 lpSensor = lpms();          % function lpms API sensor given by LPMS
 
@@ -28,7 +28,7 @@ disp('Plotting ...')
 figure('doublebuffer','on', ...
        'CurrentCharacter','a', ...
        'WindowStyle','modal')
-
+set(gcf,'WindowStyle','normal');
 while double(get(gcf,'CurrentCharacter'))~=27
     %d = lpSensor.getQueueSensorData();
     d = lpSensor.getCurrentSensorData();
@@ -37,7 +37,7 @@ while double(get(gcf,'CurrentCharacter'))~=27
         funcDrawRotation(yaw, pitch, roll);
     end
 end
-set(gcf,'WindowStyle','normal');
+
 
 %% Disconnecting
 disp('Done')
