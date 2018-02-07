@@ -1,4 +1,5 @@
 # README #
+CLONED FROM: https://bitbucket.org/lpresearch/lpsensormatlab
 MATLAB library to interface with LPMS Sensors. This library uses com port to communicated with LPMS sensors. LPMS Sensors's usb virtual com port(VCP) functionality is disabled by default. Please use LpVCPConversionTool to enable VCP support.
 
 ### Known Issues:

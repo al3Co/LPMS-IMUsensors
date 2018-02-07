@@ -38,7 +38,6 @@ while double(get(gcf,'CurrentCharacter'))~=27
     end
 end
 
-
 %% Disconnecting
 disp('Done')
 if (lpSensor.disconnect())
