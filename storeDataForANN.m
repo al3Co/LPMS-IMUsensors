@@ -56,10 +56,10 @@ while double(get(gcf,'CurrentCharacter'))~=27
     voltageArd = [voltageA0 voltageA1 voltageA2];
     dataIMU1 = lpSensor1.getCurrentSensorData();        % get current IMU1 sensor data
     dataIMU2 = lpSensor2.getCurrentSensorData();        % get current IMU2 sensor data
-    %if (~isempty(dataIMU1) && ~isempty(dataIMU2))
+    
     funcStoreDataANN(voltageArd, dataIMU1, dataIMU2, nCount, fileID);
     nCount = nCount +1;
-    %end
+    disp(nCount)
 end
 %% Disconnecting
 fclose(fileID);
