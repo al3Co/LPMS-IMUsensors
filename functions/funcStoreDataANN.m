@@ -20,9 +20,6 @@ xS2 = xS1 + cos(yawS2)*cos(pitchS2)*length2;
 yS2 = yS1 + sin(yawS2)*cos(pitchS2)*length2;
 zS2 = zS1 + sin(pitchS2)*length2;
 
-%% Positions
-positions = [xS1 yS1 zS1 xS2 yS2 zS2];
-
 %% Angle between two vectors
 angleR = subspace([xS1;yS1;zS1],[xS2;yS2;zS2])*2;
 
@@ -38,8 +35,6 @@ else
 end
 
 %% Plot
-
-clf;
 angleD = rad2deg(angleR);
 
 grid on;
