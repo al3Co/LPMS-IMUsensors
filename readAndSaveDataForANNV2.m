@@ -32,7 +32,7 @@ lpSensor2.setStreamingMode();
 disp('Done. All set up')
 
 %% Parameters
-nCount = 1; nMax = 10;
+nCount = 1; nMax = 100;
 flagIMUData = false;
 VA0 = []; VA1 = []; VA2=[];
 anglesSensors = []; linearAcc = []; posSensors = [];
@@ -45,7 +45,7 @@ while  nCount < nMax
 
     dataIMU1 = lpSensor1.getQueueSensorData();        % get queue IMU1 sensor data
     dataIMU2 = lpSensor2.getQueueSensorData();        % get queue IMU2 sensor data
-    % Sync Method 25Hz 
+    % Sync Method
     if (~isempty(dataIMU1)) && (~isempty(dataIMU2))
         flagIMUData = true;
     elseif (~isempty(dataIMU1))
@@ -61,8 +61,8 @@ while  nCount < nMax
     end
     
     if flagIMUData
-        [pS1, rS1, yS1] = quat2angle(dataIMU1.quat, 'YXZ');
-        [pS2, rS2, yS2] = quat2angle(dataIMU2.quat, 'YXZ');
+        [pS1, rS1, yS1] = funcQuat2angle(dataIMU1.quat);
+        [pS2, rS2, yS2] = funcQuat2angle(dataIMU2.quat);
         anglesSensors(nCount,:) = [pS1, rS1, yS1, pS2, rS2, yS2];
 
         linearAcc(nCount,:) = [dataIMU1.linAcc, dataIMU2.linAcc];
