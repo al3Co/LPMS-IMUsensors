@@ -31,6 +31,8 @@ figure('doublebuffer','on', ...
        'WindowStyle','modal')
 set(gcf,'units','points','position',[350,100,600,600])
 while double(get(gcf,'CurrentCharacter'))~=27
+%     d1 = lpSensor1.getQueueSensorData();      % get current sensor data
+%     d2 = lpSensor2.getQueueSensorData();      % get current sensor data
     d1 = lpSensor1.getCurrentSensorData();      % get current sensor data
     d2 = lpSensor2.getCurrentSensorData();      % get current sensor data
     if (~isempty(d1) && ~isempty(d2))
