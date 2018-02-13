@@ -32,33 +32,57 @@ lpSensor2.setStreamingMode();
 disp('Done. All set up')
 
 %% Parameters
-nCount = 1; nMax = 50;
+nCount = 1; nMax = 10;
+flagIMUData = false;
 VA0 = []; VA1 = []; VA2=[];
 anglesSensors = []; linearAcc = []; posSensors = [];
-Sample = [];
+Sample = []; timeStamp = [];
 %% Loop Plot
-tic
+now = tic;
 while  nCount < nMax
-    VA0(nCount,:) = readVoltage(ard, 'A0');                 % Sensor 1 connected to input A0.
-    VA1(nCount,:) = readVoltage(ard, 'A1');                 % Sensor 2 connected to input A1.
-    VA2(nCount,:) = readVoltage(ard, 'A2');                 % Sensor 3 connected to input A2.
-    dataIMU1 = lpSensor1.getCurrentSensorData();        % get current IMU1 sensor data
-    dataIMU2 = lpSensor2.getCurrentSensorData();        % get current IMU2 sensor data
-    
-    [pS1, rS1, yS1] = quat2angle(dataIMU1.quat, 'YXZ');
-    [pS2, rS2, yS2] = quat2angle(dataIMU2.quat, 'YXZ');
-    anglesSensors(nCount,:) = [pS1, rS1, yS1, pS2, rS2, yS2];
+%     dataIMU1 = lpSensor1.getCurrentSensorData();        % get current IMU1 sensor data
+%     dataIMU2 = lpSensor2.getCurrentSensorData();        % get current IMU2 sensor data
 
-    linearAcc(nCount,:) = [dataIMU1.linAcc, dataIMU2.linAcc];
-    posSensors(nCount,:) = funcPositionCalc(pS1, rS1, yS1, pS2, rS2, yS2);
-    Sample(nCount,:) = nCount;
+    dataIMU1 = lpSensor1.getQueueSensorData();        % get queue IMU1 sensor data
+    dataIMU2 = lpSensor2.getQueueSensorData();        % get queue IMU2 sensor data
+    % Sync Method 25Hz 
+    if (~isempty(dataIMU1)) && (~isempty(dataIMU2))
+        flagIMUData = true;
+    elseif (~isempty(dataIMU1))
+        while (isempty(dataIMU2))
+            dataIMU2 = lpSensor2.getQueueSensorData();
+        end
+        flagIMUData = true;
+    elseif (~isempty(dataIMU2))
+        while (isempty(dataIMU1))
+            dataIMU1 = lpSensor1.getQueueSensorData();
+        end
+        flagIMUData = true;
+    end
     
-    disp(nMax - nCount)
-    pause(1e-10);   % See uicontrol
-    nCount = nCount +1;
+    if flagIMUData
+        [pS1, rS1, yS1] = quat2angle(dataIMU1.quat, 'YXZ');
+        [pS2, rS2, yS2] = quat2angle(dataIMU2.quat, 'YXZ');
+        anglesSensors(nCount,:) = [pS1, rS1, yS1, pS2, rS2, yS2];
+
+        linearAcc(nCount,:) = [dataIMU1.linAcc, dataIMU2.linAcc];
+        posSensors(nCount,:) = funcPositionCalc(pS1, rS1, yS1, pS2, rS2, yS2);
+        timeStamp(nCount,:) = [dataIMU1.timestamp dataIMU2.timestamp];
+        Sample(nCount,:) = nCount;
+        
+        VA0(nCount,:) = readVoltage(ard, 'A0');                 % Sensor 1 connected to input A0.
+        VA1(nCount,:) = readVoltage(ard, 'A1');                 % Sensor 2 connected to input A1.
+        VA2(nCount,:) = readVoltage(ard, 'A2');                 % Sensor 3 connected to input A2.
+        
+        flagIMUData = false; flagIMU2 = false;
+        
+        disp([(nMax - nCount) dataIMU1.timestamp dataIMU2.timestamp])
+        nCount = nCount +1;
+    end
 end
+time = toc(now);
+disp(time)
 %% Disconnecting
-
 disp('Disconnecting')
 clear ard
 if (lpSensor1.disconnect() && lpSensor2.disconnect())
@@ -71,14 +95,13 @@ folderName = 'testsData';
 dir = [pwd, '\',folderName];
 disp(dir)
 S = char(datetime('now','Format','yyyy-MM-dd''T''HHmmss'));
-fileName = ['name_',S,'.txt'];
+fileName = ['manualMethod_',S,'.txt'];
 fileID = fopen(fullfile(dir,fileName),'wt');
 try
-    fprintf(fileID,'%12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s\r\n','timestamp','VA0', 'VA1', 'VA2', 'pos1X', 'pos1Y', 'pos1Z', 'pitchS1', 'rollS1', 'yawS1', 'linAccX1', 'linAccY1', 'linAccZ1', 'pos2X', 'pos2Y', 'pos2Z', 'pitchS2', 'rollS2', 'yawS2', 'linAccX2', 'linAccY2', 'linAccZ2', 'Angle');
-    fprintf(fileID,'%12.0f %12.4f %12.4f %12.4f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.4f\r\n',[Sample, VA0, VA1, VA2, posSensors(:,1), posSensors(:,2), posSensors(:,3), anglesSensors(:,1), anglesSensors(:,2), anglesSensors(:,3), linearAcc(:,1), linearAcc(:,2), linearAcc(:,3), posSensors(:,4), posSensors(:,5), posSensors(:,6), anglesSensors(:,4), anglesSensors(:,5), anglesSensors(:,6), linearAcc(:,4), linearAcc(:,5), linearAcc(:,6), posSensors(:,7)]');
+    fprintf(fileID,'%12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s\r\n','Sample','tStampIMU1','tStampIMU2','VA0', 'VA1', 'VA2', 'pos1X', 'pos1Y', 'pos1Z', 'pitchS1', 'rollS1', 'yawS1', 'linAccX1', 'linAccY1', 'linAccZ1', 'pos2X', 'pos2Y', 'pos2Z', 'pitchS2', 'rollS2', 'yawS2', 'linAccX2', 'linAccY2', 'linAccZ2', 'Angle');
+    fprintf(fileID,'%12.0f %12.2f %12.2f %12.4f %12.4f %12.4f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.4f\r\n',[Sample, timeStamp(:,1), timeStamp(:,2), VA0, VA1, VA2, posSensors(:,1), posSensors(:,2), posSensors(:,3), anglesSensors(:,1), anglesSensors(:,2), anglesSensors(:,3), linearAcc(:,1), linearAcc(:,2), linearAcc(:,3), posSensors(:,4), posSensors(:,5), posSensors(:,6), anglesSensors(:,4), anglesSensors(:,5), anglesSensors(:,6), linearAcc(:,4), linearAcc(:,5), linearAcc(:,6), posSensors(:,7)]');
     fclose(fileID);
 catch msg
     disp(msg)
 end
-
 disp('Done')
