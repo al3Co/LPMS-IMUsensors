@@ -29,7 +29,7 @@ ax = length1 + length2;
 axis([-ax ax -ax ax -ax ax]);
 xlabel('X'); ylabel('Y'); zlabel('Z');
 view(-35,45)
-title(sprintf('Angle: %.2f rad %.2fº Acc xS1: %.4f  yS1: %.4f zS1: %.4f xS2: %.4f  yS2: %.4f zS2: %.4f', angleR, angleD, linearAcc(1), linearAcc(2), linearAcc(3), linearAcc(4), linearAcc(5), linearAcc(6)))
+title(sprintf('Angle: %.2f rad %.2fº', angleR, angleD))
 drawnow
 
 %% Return positions
