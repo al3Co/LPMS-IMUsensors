@@ -32,7 +32,7 @@ lpSensor2.setStreamingMode();
 disp('Done. All set up')
 
 %% Parameters
-nCount = 1; nMax = 100;
+nCount = 1; nMax = 1000;
 flagIMUData = false;
 VA0 = []; VA1 = []; VA2=[];
 anglesSensors = []; linearAcc = []; posSensors = [];
@@ -48,16 +48,18 @@ while  nCount < nMax
     % Sync Method
     if (~isempty(dataIMU1)) && (~isempty(dataIMU2))
         flagIMUData = true;
-    elseif (~isempty(dataIMU1))
+    elseif (~isempty(dataIMU1)) && (isempty(dataIMU2))
         while (isempty(dataIMU2))
             dataIMU2 = lpSensor2.getQueueSensorData();
         end
         flagIMUData = true;
-    elseif (~isempty(dataIMU2))
+    elseif (~isempty(dataIMU2)) && (isempty(dataIMU1))
         while (isempty(dataIMU1))
             dataIMU1 = lpSensor1.getQueueSensorData();
         end
         flagIMUData = true;
+    elseif (isempty(dataIMU2)) && (isempty(dataIMU1))
+        flagIMUData = false;
     end
     
     if flagIMUData
@@ -74,7 +76,7 @@ while  nCount < nMax
         VA1(nCount,:) = readVoltage(ard, 'A1');                 % Sensor 2 connected to input A1.
         VA2(nCount,:) = readVoltage(ard, 'A2');                 % Sensor 3 connected to input A2.
         
-        flagIMUData = false; flagIMU2 = false;
+        flagIMUData = false;
         
         disp([(nMax - nCount) dataIMU1.timestamp dataIMU2.timestamp])
         nCount = nCount +1;
