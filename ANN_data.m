@@ -3,56 +3,53 @@ clear
 clc
 %% Read and categorice data
 
-filename1 = 'manualMethod_2018-02-13T184336.txt';
-filename2 = 'Name_GUI_2018-02-13T185245.txt';
-filename3 = 'Name_GUI_2018-02-14T160353.txt';
+load('/Users/aldo/Documents/GitHub/FlexSensor/workSpaceData_UseThis.mat')
 
-T1 = readtable(filename1);
-T2 = readtable(filename2);
-T3 = readtable(filename3);
+A0 = cat(1,T1.A0, T2.A0, T3.A0, T4.A0, T5.A0, T6.A0, T7.A0, T8.A0, T9.A0);
+A1 = cat(1,T1.A1, T2.A1, T3.A1, T4.A1, T5.A1, T6.A1, T7.A1, T8.A1, T9.A1);
+A2 = cat(1,T1.A2, T2.A2, T3.A2, T4.A2, T5.A2, T6.A2, T7.A2, T8.A2, T9.A2);
+A3 = cat(1,T1.A3, T2.A3, T3.A3, T4.A3, T5.A3, T6.A3, T7.A3, T8.A3, T9.A3);
+A4 = cat(1,T1.A4, T2.A4, T3.A4, T4.A4, T5.A4, T6.A4, T7.A4, T8.A4, T9.A4);
+A5 = cat(1,T1.A5, T2.A5, T3.A5, T4.A5, T5.A5, T6.A5, T7.A5, T8.A5, T9.A5);
+A6 = cat(1,T1.A6, T2.A6, T3.A6, T4.A6, T5.A6, T6.A6, T7.A6, T8.A6, T9.A6);
+A7 = cat(1,T1.A7, T2.A7, T3.A7, T4.A7, T5.A7, T6.A7, T7.A7, T8.A7, T9.A7);
+A8 = cat(1,T1.A8, T2.A8, T3.A8, T4.A8, T5.A8, T6.A8, T7.A8, T8.A8, T9.A8);
+A9 = cat(1,T1.A9, T2.A9, T3.A9, T4.A9, T5.A9, T6.A9, T7.A9, T8.A9, T9.A9);
 
-VA0 = cat(1,T1.VA0, T2.VA0, T3.VA0);
-VA1 = cat(1,T1.VA1, T2.VA1, T3.VA1);
-VA2 = cat(1,T1.VA2, T2.VA2, T3.VA2);
+Q1 = cat(1,T1.Quat1, T2.Quat1, T3.Quat1, T4.Quat1, T5.Quat1, T6.Quat1, T7.Quat1, T8.Quat1, T9.Quat1);
+Q2 = cat(1,T1.Quat2, T2.Quat2, T3.Quat2, T4.Quat2, T5.Quat2, T6.Quat2, T7.Quat2, T8.Quat2, T9.Quat2);
+Q3 = cat(1,T1.Quat3, T2.Quat3, T3.Quat3, T4.Quat3, T5.Quat3, T6.Quat3, T7.Quat3, T8.Quat3, T9.Quat3);
+Q4 = cat(1,T1.Quat4, T2.Quat4, T3.Quat4, T4.Quat4, T5.Quat4, T6.Quat4, T7.Quat4, T8.Quat4, T9.Quat4);
 
-pos1X = cat(1,T1.pos1X, T2.pos1X, T3.pos1X);
-pos1Y = cat(1,T1.pos1Y, T2.pos1Y, T3.pos1Y);
-pos1Z = cat(1,T1.pos1Z, T2.pos1Z, T3.pos1Z);
-pitchS1 = cat(1,T1.pitchS1, T2.pitchS1, T3.pitchS1);
-rollS1 = cat(1,T1.rollS1, T2.rollS1, T3.rollS1);
-yawS1 = cat(1,T1.yawS1, T2.yawS1, T3.yawS1);
-linAccX1 = cat(1,T1.linAccX1, T2.linAccX1, T3.linAccX1);
-linAccY1 = cat(1,T1.linAccY1, T2.linAccY1, T3.linAccY1);
-linAccZ1  = cat(1,T1.linAccZ1 , T2.linAccZ1 , T3.linAccZ1 );
+H = cat(1,T1.Hour, T2.Hour, T3.Hour, T4.Hour, T5.Hour, T6.Hour, T7.Hour, T8.Hour, T9.Hour);
+M = cat(1,T1.Minute, T2.Minute, T3.Minute, T4.Minute, T5.Minute, T6.Minute, T7.Minute, T8.Minute, T9.Minute);
+S = cat(1,T1.Sec, T2.Sec, T3.Sec, T4.Sec, T5.Sec, T6.Sec, T7.Sec, T8.Sec, T9.Sec);
 
-pos2X = cat(1,T1.pos2X, T2.pos2X, T3.pos2X);
-pos2Y = cat(1,T1.pos2Y, T2.pos2Y, T3.pos2Y);
-pos2Z = cat(1,T1.pos2Z, T2.pos2Z, T3.pos2Z);
-pitchS2 = cat(1,T1.pitchS2, T2.pitchS2, T3.pitchS2);
-rollS2 = cat(1,T1.rollS2, T2.rollS2, T3.rollS2);
-yawS2 = cat(1,T1.yawS2, T2.yawS2, T3.yawS2);
-linAccX2 = cat(1,T1.linAccX2, T2.linAccX2, T3.linAccX2);
-linAccY2 = cat(1,T1.linAccY2, T2.linAccY2, T3.linAccY2);
-linAccZ2  = cat(1,T1.linAccZ2, T2.linAccZ1, T3.linAccZ2);
+[AngYaw, AngPitch, AngRoll] = quat2angle([Q1 Q2 Q3 Q4]);
 
-Angle = cat(1, T1.Angle, T2.Angle, T3.Angle);
+
+%% PCA principal component analysis of raw data
+
+X = [A0 A1 A2 A3 A4 A5 A6 A7 A8 A9];
+coeff = pca(X);
+[wcoeff,~,latent,~,explained] = pca(X,'VariableWeights','variance');
+
 
 %% RNA
 
-% input = [EMG + IMUS (2x)]'
-input = [VA0 VA1 pos1X pos1Y pos1Z pitchS1 rollS1 yawS1 linAccX1 linAccY1 linAccZ1 pos2X pos2Y pos2Z pitchS2 rollS2 yawS2 linAccX2 linAccY2 linAccZ2]'; % INPUTS
-% target = [Angle from IMUs and Voltage from flexSensor]'
-target = [Angle VA2]';
- p
-net = feedforwardnet(10);
-[net,tr] = train(net,input,target);
-view(net)
-% performance
-y = net(input);
-perf = perform(net,y,target);
-% testing network
-output = net([0.967700000000000,0.958000000000000,-0.970200000000000,-0.232500000000000,0.0686000000000000,0.0686000000000000,-0.00760000000000000,-2.90640000000000,-0.00100000000000000,0.000700000000000000,0.00450000000000000,-0.875400000000000,0.753500000000000,0.205900000000000,0.137800000000000,-0.0982000000000000,1.47500000000000,-0.000200000000000000,0.00110000000000000,0.00570000000000000]');
-% generate Function
-genFunction(net,'ANN_ExoData_Fcn');
-y2 = ANN_ExoData_Fcn(input);
-accuracy2 = max(abs(y-y2));
+
+% input = [A0 A1 A2 A3 A4 A5 A6 A7 A8 A9]'; % INPUTS
+% % target = [Angle from IMUs and Voltage from flexSensor]'
+% target = [AngPitch AngRoll AngYaw]';
+% net = feedforwardnet(10);
+% [net,tr] = train(net,input,target);
+% view(net)
+% % performance
+% y = net(input);
+% perf = perform(net,y,target);
+% % testing network
+% %output = net([]');
+% % generate Function
+% genFunction(net,'ANN_ExoData_Fcn');
+% y2 = ANN_ExoData_Fcn(input);
+% accuracy2 = max(abs(y-y2));
