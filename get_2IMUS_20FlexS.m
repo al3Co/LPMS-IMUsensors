@@ -1,6 +1,5 @@
 %% 170318
 % Script to save the data received by 2 IMU and 20 FlexSens from ARDUINO
-
 close all
 clear
 clc
@@ -13,7 +12,8 @@ disp('Starting')
 
 %% ARDUINO
 load('/Users/aldo/Documents/MATLAB/matlab.mat')
-for i=1:length(data)
+numLilys = length(data);
+for i=1:numLilys
     fprintf('Connecting Ard #%d\n',i);
     appArduino(i,:) = serial(data(i,2),'BaudRate',9600);
     fopen(appArduino(i))
@@ -38,18 +38,30 @@ disp('Done. All set up')
 %% Parameters
 nTotal = 1500;  % samples number
 nCount = 1;     % initial sample
-data = [];      % variable to save data
-nSens = 4;      % number of sensors including zero
+dataArd = [];      % variable to save data
+nSens = 6;      % number of sensors including zero
 Sample = [];    % sample stamp
 clockT = [];
-dataIMU = [];
+StampIMUA = [];
+StampIMUB = [];
+quatIMUA = [];
+quatIMUB = [];
+accIMUA = [];
+accIMUB = [];
 
-%% Loop Plot
+% format incoming data
+format = '';
+for nSen = 0: nSens
+    if nSen < nSens
+        format = [format , '%f,'];
+    else
+        format = [format , '%f'];
+    end
+end
+
+%% get data
 now = tic;
 while  nCount < nMax
-%     dataIMU1 = lpSensor1.getCurrentSensorData();        % get current IMU1 sensor data
-%     dataIMU2 = lpSensor2.getCurrentSensorData();        % get current IMU2 sensor data
-
     dataIMU1 = lpSensor1.getQueueSensorData();        % get queue IMU1 sensor data
     dataIMU2 = lpSensor2.getQueueSensorData();        % get queue IMU2 sensor data
     % Sync Method
@@ -70,37 +82,52 @@ while  nCount < nMax
     end
     
     if flagIMUData
-        dataIMU(:,nCount) = [dataIMU1.timestamp, dataIMU1.quat, dataIMU1.gyr dataIMU2.timestamp, dataIMU2.quat, dataIMU2.gyr];
-        anglesSensors(nCount,:) = [pS1, rS1, yS1, pS2, rS2, yS2];
-
-        linearAcc(nCount,:) = [dataIMU1.linAcc, dataIMU2.linAcc];
-        posSensors(nCount,:) = funcPositionCalc(pS1, rS1, yS1, pS2, rS2, yS2);
-        timeStamp(nCount,:) = [dataIMU1.timestamp dataIMU2.timestamp];
+        % IMUs
+        StampIMUA(nCount,:) = [dataIMU1.timestamp];
+        StampIMUB(nCount,:) = [dataIMU2.timestamp];
+        quatIMUA(nCount,:) = [dataIMU1.quat];
+        quatIMUB(nCount,:) = [dataIMU2.quat];
+        accIMUA(nCount,:) = [dataIMU1.acc];
+        accIMUB(nCount,:) = [dataIMU2.acc];
         Sample(nCount,:) = nCount;
+        clockT(nCount,:) = clock;
         
-        VA0(nCount,:) = readVoltage(ard, 'A0');                 % Sensor 1 connected to input A0.
-        VA1(nCount,:) = readVoltage(ard, 'A1');                 % Sensor 2 connected to input A1.
-        VA2(nCount,:) = readVoltage(ard, 'A2');                 % Sensor 3 connected to input A2.
+        % Arduinos
+        try
+            datoInicial = 1;
+            for i=1:numLilys
+                dataArd(nCount,datoInicial:1:(nSens*i)) = fscanf(arduino(i),format);
+                datoInicial = datoInicial + nSens;
+            end
+            nCount = nCount +1;
+        catch
+            dips('Serial Arduino Data error')
+        end
         
         flagIMUData = false;
-        
         disp([(nMax - nCount) dataIMU1.timestamp dataIMU2.timestamp])
-        nCount = nCount +1;
     end
 end
 time = toc(now);
 disp(time)
+
 %% Disconnecting
 disp('Disconnecting')
-clear ard
+clear appArduino
 if (lpSensor1.disconnect() && lpSensor2.disconnect())
     disp('Sensors disconnected')
 end
 
 
 %% https://es.mathworks.com/help/matlab/ref/writetable.html
+% https://es.mathworks.com/help/matlab/ref/save.html
 
+% creating table
+clockT = [clockT(:,4) clockT(:,5) clockT(:,6)];
+T = table(Sample, clockT, StampIMUA, StampIMUB,...
+    quatIMUA, quatIMUB, accIMUA, accIMUB, dataArd);
 
+% saving on file
 disp('Storing Data to a File')
 folderName = 'testsData';
 [status, msg, msgID] = mkdir(folderName);
@@ -108,18 +135,7 @@ dir = [pwd, '\',folderName];
 disp(dir)
 S = char(datetime('now','Format','yyyy-MM-dd''T''HHmmss'));
 fileName = ['manualMethod_',S,'.txt'];
-fileID = fopen(fullfile(dir,fileName),'wt');
-try
-    fprintf(fileID,'%12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s %12s\r\n',...
-    'Sample','tStampIMU1','tStampIMU2','VA0', 'VA1', 'VA2', 'pos1X', 'pos1Y', 'pos1Z', 'pitchS1', 'rollS1', 'yawS1', 'linAccX1', 'linAccY1', 'linAccZ1', ...
-    'pos2X', 'pos2Y', 'pos2Z', 'pitchS2', 'rollS2', 'yawS2', 'linAccX2', 'linAccY2', 'linAccZ2', 'Angle');
-    
-    fprintf(fileID,'%12.0f %12.2f %12.2f %12.4f %12.4f %12.4f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.4f\r\n',...
-    [Sample, timeStamp(:,1), timeStamp(:,2), VA0, VA1, VA2, posSensors(:,1), posSensors(:,2), posSensors(:,3), ...
-    anglesSensors(:,1), anglesSensors(:,2), anglesSensors(:,3), linearAcc(:,1), linearAcc(:,2), linearAcc(:,3), posSensors(:,4), posSensors(:,5), posSensors(:,6),...
-    anglesSensors(:,4), anglesSensors(:,5), anglesSensors(:,6), linearAcc(:,4), linearAcc(:,5), linearAcc(:,6), posSensors(:,7)]');
-    fclose(fileID);
-catch msg
-    disp(msg)
-end
-disp('Done')
+fileName2 = ['manualMethod_',S,'.mat'];
+
+writetable(T,fileName,'WriteRowNames',true); 
+save WorkSpace.mat
