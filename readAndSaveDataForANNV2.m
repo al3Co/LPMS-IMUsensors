@@ -42,7 +42,6 @@ now = tic;
 while  nCount < nMax
 %     dataIMU1 = lpSensor1.getCurrentSensorData();        % get current IMU1 sensor data
 %     dataIMU2 = lpSensor2.getCurrentSensorData();        % get current IMU2 sensor data
-
     dataIMU1 = lpSensor1.getQueueSensorData();        % get queue IMU1 sensor data
     dataIMU2 = lpSensor2.getQueueSensorData();        % get queue IMU2 sensor data
     % Sync Method
