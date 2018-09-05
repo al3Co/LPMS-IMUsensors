@@ -35,9 +35,37 @@ for imu = 1:nIMUs
     lpSensor(imu).setStreamingMode();
 end
 
+% getting data
+global KEY_IS_PRESSED
+KEY_IS_PRESSED = 0;
+gcf
+set(gcf, 'KeyPressFcn', @myKeyPressFcn)
+while ~KEY_IS_PRESSED
+    for imu = 1:nIMUs
+        lpData(imu) = lpSensor(imu).getQueueSensorData();
+        while (isempty(lpData(imu)))
+            lpData(imu) = lpSensor(imu).getQueueSensorData();
+        end
+    end
+    
+    % do something with data
+    
+    drawnow
+end
+disp('loop ended')
+close gcf
+
 % disconnecting
 for imu = 1:nIMUs
     if (lpSensor(imu).disconnect())
         disp('sensor disconnected')
     end
+end
+
+
+% press any key function
+function myKeyPressFcn(hObject, event)
+global KEY_IS_PRESSED
+KEY_IS_PRESSED  = 1;
+disp('key is pressed')
 end
