@@ -7,15 +7,13 @@ if ~isempty(instrfind)
     fclose(instrfind);
     delete(instrfind);
 end
-
+date = char(datetime('now','Format','yyyy-MM-dd''T''HHmmss'));
 % Parameters
-COMPort = {'/dev/ttyUSB0', '/dev/ttyUSB1'};
+COMPort = {'COM9', 'COM10'};
 [~,nIMUs] = size(COMPort);
 
-T = 400;
 nCount = 1;
 baudrate = 921600;
-accData = zeros(T,3);
 
 % create nIMUs instances
 for imu = 1:nIMUs
@@ -24,6 +22,7 @@ end
 
 
 % Connect to sensor
+disp('Connecting')
 for imu = 1:nIMUs
     if ( ~lpSensor(imu).connect(COMPort(imu), baudrate) )
         return 
@@ -35,25 +34,26 @@ for imu = 1:nIMUs
     lpSensor(imu).setStreamingMode();
 end
 
+disp('Getting data, Press any key to stop')
 % getting data
 global KEY_IS_PRESSED
 KEY_IS_PRESSED = 0;
-gcf
-set(gcf, 'KeyPressFcn', @myKeyPressFcn)
+gcf;
+set(gcf, 'KeyPressFcn', @myKeyPressFcn);
+count = 1;
 while ~KEY_IS_PRESSED
     for imu = 1:nIMUs
-        lpData(imu) = lpSensor(imu).getQueueSensorData();
-        while (isempty(lpData(imu)))
-            lpData(imu) = lpSensor(imu).getQueueSensorData();
+        lpData = lpSensor(imu).getQueueSensorData();
+        if ~isempty(lpData)
+            funcSaveIMUsData(count, imu, date, lpData);
         end
     end
-    
-    % do something with data
-    
+    count = count + 1;
     drawnow
 end
 disp('loop ended')
 close gcf
+close all
 
 % disconnecting
 for imu = 1:nIMUs
