@@ -2,14 +2,14 @@ close all
 clear all
 clc
 
-% COM port cleaning
+% COM port cleaning...
 if ~isempty(instrfind)
     fclose(instrfind);
     delete(instrfind);
 end
 date = char(datetime('now','Format','yyyy-MM-dd''T''HHmmss'));
 % Parameters
-COMPort = {'COM9', 'COM10'};
+COMPort = {'COM9', 'COM10', 'COM12'};
 [~,nIMUs] = size(COMPort);
 
 nCount = 1;
@@ -19,7 +19,6 @@ baudrate = 921600;
 for imu = 1:nIMUs
     lpSensor(imu) = lpms();
 end
-
 
 % Connect to sensor
 disp('Connecting')
@@ -34,21 +33,25 @@ for imu = 1:nIMUs
     lpSensor(imu).setStreamingMode();
 end
 
-disp('Getting data, Press any key to stop')
-% getting data
-global KEY_IS_PRESSED
-KEY_IS_PRESSED = 0;
-gcf;
-set(gcf, 'KeyPressFcn', @myKeyPressFcn);
 count = 1;
-while ~KEY_IS_PRESSED
+disp('Getting data')
+
+DlgH = figure;
+H = uicontrol('Style', 'PushButton', ...
+                    'String', 'Break', ...
+                    'Callback', 'delete(gcbf)');
+% getting data  
+while (ishandle(H))
     for imu = 1:nIMUs
         lpData = lpSensor(imu).getQueueSensorData();
+        % lpData = lpSensor(imu).getCurrentSensorData();
         if ~isempty(lpData)
             funcSaveIMUsData(count, imu, date, lpData);
         end
     end
     count = count + 1;
+    % disp(count)
+    % pause(0.001);
     drawnow
 end
 disp('loop ended')
@@ -60,12 +63,4 @@ for imu = 1:nIMUs
     if (lpSensor(imu).disconnect())
         disp('sensor disconnected')
     end
-end
-
-
-% press any key function
-function myKeyPressFcn(hObject, event)
-global KEY_IS_PRESSED
-KEY_IS_PRESSED  = 1;
-disp('key is pressed')
 end
